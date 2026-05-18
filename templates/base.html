@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TodoList</title>
+<link rel="stylesheet" href="/static/css/style.css">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<header>
+    <div class="header-inner">
+        <h1><a href="/">📋 TodoList</a></h1>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/stats">统计</a>
+        </nav>
+    </div>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

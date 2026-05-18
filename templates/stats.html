@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="stats-section">
+    <h2>📊 月度完成统计</h2>
+
+    <div class="stats-filter">
+        <button class="filter-btn active" onclick="filterStats(0)">全部</button>
+        <button class="filter-btn" onclick="filterStats(3)">近3月</button>
+        <button class="filter-btn" onclick="filterStats(6)">近6月</button>
+        <button class="filter-btn" onclick="filterStats(12)">近12月</button>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="stats-chart"></canvas>
+    </div>
+
+    <table class="stats-table" id="stats-table">
+        <thead>
+            <tr>
+                <th>月份</th>
+                <th>总计</th>
+                <th>已完成</th>
+                <th>完成率</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div class="stats-empty hidden" id="stats-empty">
+        <p>暂无数据。开始添加待办吧！</p>
+    </div>
+</section>
+
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="/static/js/stats.js"></script>
+{% endblock %}

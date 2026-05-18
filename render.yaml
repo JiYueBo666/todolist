@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: todolist
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    disk:
+      name: todo-data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: TODO_DB_PATH
+        value: /app/data/todos.db

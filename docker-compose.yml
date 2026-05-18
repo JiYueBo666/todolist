@@ -1,0 +1,11 @@
+services:
+  todolist:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - todo-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  todo-data:

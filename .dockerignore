@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.db
+venv/
+.env
+.DS_Store
+.git/
+data/
+Dockerfile
+.dockerignore
+docker-compose.yml
+start.bat
+render.yaml

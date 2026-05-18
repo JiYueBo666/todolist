@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if unfinished_todos %}
+<section class="unfinished-banner" id="unfinished-section">
+    <div class="unfinished-header" onclick="toggleUnfinished()">
+        <span>⚠️ 你有 {{ unfinished_todos|length }} 个上次未完成的待办</span>
+        <span class="toggle-arrow">▼</span>
+    </div>
+    <ul class="unfinished-list" id="unfinished-list">
+        {% for todo in unfinished_todos %}
+        <li class="todo-item unfinished" data-id="{{ todo.id }}">
+            <input type="checkbox" class="todo-checkbox" onchange="toggleComplete({{ todo.id }}, this)">
+            <span class="todo-title">{{ todo.title }}</span>
+            <span class="todo-meta">创建于 {{ todo.created_at[:10] }}</span>
+            <button class="todo-delete" onclick="deleteTodo({{ todo.id }}, this.closest('.todo-item'))">✕</button>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+{% endif %}
+
+<section class="add-todo-section">
+    <div class="add-todo-wrapper">
+        <input type="text" id="todo-input" placeholder="有什么需要做的？" autocomplete="off" autofocus>
+        <ul id="autocomplete-list" class="autocomplete-dropdown hidden"></ul>
+        <button id="add-btn" onclick="addTodo()">添加</button>
+    </div>
+</section>
+
+<section class="todo-list-section">
+    {% if active_todos %}
+    <ul id="todo-list">
+        {% for todo in active_todos %}
+        <li class="todo-item {% if todo.is_completed %}completed{% endif %}" data-id="{{ todo.id }}">
+            <input type="checkbox" class="todo-checkbox" {% if todo.is_completed %}checked{% endif %}
+                   onchange="toggleComplete({{ todo.id }}, this)">
+            <div class="todo-body">
+                <span class="todo-title">{{ todo.title }}</span>
+                <span class="todo-meta">
+                    创建: {{ todo.created_at[:16] | replace('T', ' ') }}
+                    {% if todo.completed_at %}
+                    · 完成: {{ todo.completed_at[:16] | replace('T', ' ') }}
+                    {% endif %}
+                </span>
+            </div>
+            <button class="todo-delete" onclick="deleteTodo({{ todo.id }}, this.closest('.todo-item'))">✕</button>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-state">
+        <p>🎉 全部搞定！添加新的待办吧。</p>
+    </div>
+    {% endif %}
+</section>
+
+{% endblock %}
+{% block extra_scripts %}
+<script src="/static/js/app.js"></script>
+{% endblock %}
