@@ -108,6 +108,7 @@ async function addTodo() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title }),
         });
+        if (res.status === 401) { window.location.href = '/login'; return; }
         if (!res.ok) { const err = await res.json(); showToast(err.error); return; }
         const data = await res.json();
         prependTodo(data.todo);
@@ -162,6 +163,7 @@ async function toggleComplete(id, checkbox) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ is_completed: isCompleted }),
         });
+        if (res.status === 401) { window.location.href = '/login'; return; }
         if (!res.ok) { checkbox.checked = !isCompleted; showToast('操作失败'); return; }
         const data = await res.json();
         const item = document.querySelector(`.todo-item[data-id="${id}"]`);
@@ -179,6 +181,7 @@ async function deleteTodo(id, el) {
     if (!confirm('确定删除这个待办？')) return;
     try {
         const res = await fetch(`/api/todos/${id}`, { method: 'DELETE' });
+        if (res.status === 401) { window.location.href = '/login'; return; }
         if (!res.ok) { showToast('删除失败'); return; }
         el.classList.add('removing');
         setTimeout(() => {

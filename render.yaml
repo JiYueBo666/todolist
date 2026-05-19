@@ -4,10 +4,22 @@ services:
     runtime: docker
     plan: free
     healthCheckPath: /health
-    disk:
-      name: todo-data
-      mountPath: /app/data
-      sizeGB: 1
     envVars:
-      - key: TODO_DB_PATH
-        value: /app/data/todos.db
+      - key: MYSQL_HOST
+        sync: false
+      - key: MYSQL_PORT
+        value: "3306"
+      - key: MYSQL_USER
+        sync: false
+      - key: MYSQL_PASSWORD
+        sync: false
+      - key: MYSQL_DATABASE
+        value: todolist
+      - key: MYSQL_SSL_CA
+        value: /etc/ssl/certs/ca-certificates.crt
+      - key: SECRET_KEY
+        sync: false
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false

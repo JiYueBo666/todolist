@@ -12,8 +12,18 @@
     <div class="header-inner">
         <h1><a href="/">📋 TodoList</a></h1>
         <nav>
-            <a href="/">首页</a>
-            <a href="/stats">统计</a>
+            {% if user %}
+                <a href="/">Home</a>
+                <a href="/stats">Stats</a>
+                {% if user.is_admin %}
+                    <a href="/admin">Admin</a>
+                {% endif %}
+                <span class="nav-user">{{ user.username }}</span>
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            {% endif %}
         </nav>
     </div>
 </header>

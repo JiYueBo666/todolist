@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Login</h2>
+
+        {% if error %}
+        <div class="auth-error">{{ error }}</div>
+        {% endif %}
+        {% if success %}
+        <div class="auth-success">{{ success }}</div>
+        {% endif %}
+
+        <form method="post" action="/login" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username" autofocus required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="form-submit">Login</button>
+        </form>
+
+        <div class="auth-links">
+            Don't have an account? <a href="/register">Register</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
