@@ -18,19 +18,26 @@ def _get_ssl_config() -> dict | None:
     return None
 
 
-@contextmanager
-def get_db():
-    conn = pymysql.connect(
+def _connect(database=None, autocommit=True):
+    kwargs = dict(
         host=os.environ.get("MYSQL_HOST", "localhost"),
         port=int(os.environ.get("MYSQL_PORT", "3306")),
         user=os.environ.get("MYSQL_USER", "root"),
         password=os.environ.get("MYSQL_PASSWORD", ""),
-        database=os.environ.get("MYSQL_DATABASE", "todolist"),
         ssl=_get_ssl_config(),
         cursorclass=pymysql.cursors.DictCursor,
-        autocommit=False,
+        autocommit=autocommit,
         charset="utf8mb4",
     )
+    if database:
+        kwargs["database"] = database
+    return pymysql.connect(**kwargs)
+
+
+@contextmanager
+def get_db():
+    db_name = os.environ.get("MYSQL_DATABASE", "todolist")
+    conn = _connect(database=db_name, autocommit=False)
     try:
         yield conn
     finally:
@@ -38,6 +45,16 @@ def get_db():
 
 
 def init_db():
+    db_name = os.environ.get("MYSQL_DATABASE", "todolist")
+
+    # Ensure database exists before connecting to it
+    conn = _connect()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}`")
+    finally:
+        conn.close()
+
     with get_db() as db:
         with db.cursor() as cur:
             cur.execute("""
