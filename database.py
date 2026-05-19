@@ -1,13 +1,20 @@
+import logging
 import os
 from contextlib import contextmanager
+from pathlib import Path
 
 import pymysql.cursors
+
+logger = logging.getLogger("todolist")
 
 
 def _get_ssl_config() -> dict | None:
     ca_path = os.environ.get("MYSQL_SSL_CA", "")
-    if ca_path:
+    if not ca_path:
+        return None
+    if Path(ca_path).exists():
         return {"ca": ca_path}
+    logger.warning("MYSQL_SSL_CA is set but file %s not found, connecting without SSL", ca_path)
     return None
 
 
