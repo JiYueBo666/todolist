@@ -1,7 +1,10 @@
+import logging
 import os
 from datetime import datetime
 
 from database import get_db
+
+logger = logging.getLogger("todolist")
 
 
 def row_to_dict(row) -> dict:
@@ -33,6 +36,20 @@ def get_user_by_username(username: str) -> dict | None:
             return dict(row) if row else None
 
 
+def has_approved_users() -> bool:
+    with get_db() as db:
+        with db.cursor() as cur:
+            cur.execute("SELECT 1 FROM users WHERE is_approved = 1 LIMIT 1")
+            return cur.fetchone() is not None
+
+
+def make_admin(user_id: int):
+    with get_db() as db:
+        with db.cursor() as cur:
+            cur.execute("UPDATE users SET is_admin = 1, is_approved = 1 WHERE id = %s", (user_id,))
+            db.commit()
+
+
 def get_pending_users() -> list[dict]:
     with get_db() as db:
         with db.cursor() as cur:
@@ -58,9 +75,11 @@ def init_admin_user():
     username = os.environ.get("ADMIN_USERNAME")
     password = os.environ.get("ADMIN_PASSWORD")
     if not username or not password:
+        logger.warning("ADMIN_USERNAME or ADMIN_PASSWORD not set, skipping admin creation")
         return
     existing = get_user_by_username(username)
     if existing:
+        logger.info("Admin user '%s' already exists, skipping creation", username)
         return
     from bcrypt import hashpw, gensalt
     password_hash = hashpw(password.encode(), gensalt()).decode()

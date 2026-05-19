@@ -12,6 +12,8 @@ from models import (
     get_pending_users,
     get_unfinished_previous_todos,
     get_user_by_username,
+    has_approved_users,
+    make_admin,
 )
 
 page_router = APIRouter()
@@ -92,6 +94,13 @@ async def register_handler(request: Request):
     created = create_user(username, password_hash)
     if not created:
         return _render("register.html", request, error="Username already taken.")
+
+    # If no approved users exist, first registrant becomes admin
+    if not has_approved_users():
+        make_admin(created["id"])
+        return _render("login.html", request,
+                       error=None,
+                       success="Registration complete. You are the admin. Please log in.")
 
     return _render("login.html", request,
                    error=None,
